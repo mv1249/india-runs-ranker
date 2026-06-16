@@ -1,0 +1,13 @@
+# Large pre-computed embedding files — exceed GitHub's 100MB limit.
+# Regenerate with: python embed_only.py --candidates candidates.jsonl --out_dir .
+career_embeddings.npy
+skill_embeddings.npy
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Raw challenge data (not part of the submission codebase)
+conversation_export.md

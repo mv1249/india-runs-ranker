@@ -1,0 +1,100 @@
+# Redrob Hackathon — Submission Metadata
+# Fill in your team details before submitting via the portal.
+
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "your-team-name-here"   # <-- fill in
+
+primary_contact:
+  name: "Meet Vaddoriya"
+  email: "muskaan.meet3116@gmail.com"
+  phone: "+91-XXXXXXXXXX"          # <-- fill in
+
+team_members:
+  - name: "Meet Vaddoriya"
+    email: "muskaan.meet3116@gmail.com"
+    role: "ML Engineer"
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/YOUR_USERNAME/redrob-ranker"   # <-- fill in
+
+sandbox_link: "https://huggingface.co/spaces/YOUR_USERNAME/redrob-ranker"  # <-- fill in after deploy
+
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submission.csv --artifacts_dir ./precomputed"
+# NOTE: pre-computed artifacts (career_embeddings.npy, skill_embeddings.npy, jd_vectors.npy,
+# candidate_ids.npy, features.parquet) must be in --artifacts_dir.
+# The ranking step itself runs in ~5 seconds on CPU after artifacts are present.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "MacBook Pro (Apple Silicon)"
+  cpu_cores: 10
+  ram_gb: 16
+  python_version: "3.14.1"
+  os: "macOS 25.5.0"
+  uses_gpu_for_inference: false          # rank.py is CPU-only (pure numpy matmul)
+  has_network_during_ranking: false      # no API calls at ranking time
+  pre_computation_required: true         # SBERT embeddings pre-computed offline
+  pre_computation_time_minutes: 5        # ~3 min on MPS Apple Silicon
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+ai_tools_used:
+  - "Claude"
+
+ai_usage_summary: |
+  Used Claude Code (claude-sonnet-4-6) for architecture design, code generation,
+  and feature engineering logic. No candidate data was passed to any LLM at
+  inference time. All scoring is deterministic feature engineering + pre-computed
+  SBERT embeddings. Claude was used as a development accelerator, not for candidate
+  evaluation.
+
+# ============================================================================
+# Approach summary
+# ============================================================================
+methodology_summary: |
+  Multi-signal cascade ranker combining SBERT semantic similarity with trust-weighted
+  structured features. Five components:
+
+  1. SBERT Career Similarity (35%): all-MiniLM-L6-v2 embeds each candidate's full
+     career description history and computes cosine similarity against a JD query
+     vector. This surfaces "plain-language" candidates who built retrieval systems
+     without using buzz terms.
+
+  2. SBERT Skill Similarity (20%): trust-weighted skill text (skills repeated
+     proportional to proficiency × endorsements × duration) embedded and compared
+     against JD skill keywords. Kills keyword stuffers: "advanced Fine-tuning,
+     4 months, 4 endorsements" scores near zero while "expert Pinecone, 88 months,
+     34 endorsements" scores high.
+
+  3. Skill Trust Score (20%): explicit Tier-A/B/C skill taxonomy with per-skill
+     weight = proficiency × log(1+endorsements) × log(1+duration_months).
+     Tier-A includes FAISS, Qdrant, BM25, LTR, NDCG, sentence-transformers.
+
+  4. Career Trajectory (12%): product-company premium, ML-title tenure bonus,
+     and a 0.25× penalty for consulting-only histories (Wipro/TCS/Infosys/Accenture).
+
+  5. Behavioral Availability (8%, multiplicative): composite of open_to_work_flag,
+     last_active recency decay over 180 days, recruiter_response_rate,
+     interview_completion_rate, offer_acceptance_rate, and notice period bucket.
+
+  Honeypot defense: candidates with impossible timelines (career_months > claimed_yoe
+  + 3 years) or ≥4 expert/advanced skills with zero duration receive a hard zero.
+
+  Ranking step runtime: ~5 seconds on CPU (numpy matmul over pre-loaded arrays).
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true    # explicit timeline and skill-trust checks applied
+  reproduction_tested: true

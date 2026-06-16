@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redrob India Runs — Candidate Ranking Submission</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #e8eaf0; }
+
+  .slide {
+    width: 1000px;
+    min-height: 580px;
+    margin: 32px auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 54px 68px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.10);
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 6px; height: 100%;
+    background: linear-gradient(180deg, #6C63FF 0%, #00b4d8 100%);
+  }
+  .slide-brand {
+    position: absolute;
+    bottom: 22px; left: 68px;
+    font-size: 11px; color: #94a3b8; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  }
+  .slide-num {
+    position: absolute;
+    bottom: 22px; right: 32px;
+    font-size: 11px; color: #cbd5e1; font-weight: 500;
+  }
+
+  /* ─── TITLE SLIDE ─── */
+  .s-title { background: linear-gradient(135deg, #10002b 0%, #1a1a4e 50%, #0c2e5e 100%); color: #fff; }
+  .s-title::before { display: none; }
+  .s-title .brand-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, #6C63FF, #00b4d8, #6C63FF);
+  }
+  .s-title h1 { font-size: 42px; font-weight: 800; line-height: 1.15; color: #e0e7ff; margin-bottom: 14px; }
+  .s-title h2 { font-size: 20px; font-weight: 400; color: #94a3b8; margin-bottom: 36px; line-height: 1.5; }
+  .s-title .meta { font-size: 13px; color: #64748b; margin-bottom: 6px; }
+  .s-title .meta strong { color: #a5b4fc; }
+  .s-title .pill {
+    display: inline-block; background: rgba(108,99,255,0.3); color: #c4b5fd;
+    padding: 5px 14px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    border: 1px solid rgba(108,99,255,0.5); margin-right: 8px; margin-top: 10px;
+  }
+
+  /* ─── THANK YOU SLIDE ─── */
+  .s-thanks { background: linear-gradient(135deg, #10002b 0%, #1a1a4e 50%, #0c2e5e 100%); color: #fff; text-align: center; }
+  .s-thanks::before { display: none; }
+  .s-thanks .brand-bar {
+    position: absolute; top: 0; left: 0; right: 0; height: 5px;
+    background: linear-gradient(90deg, #6C63FF, #00b4d8, #6C63FF);
+  }
+  .s-thanks h1 { font-size: 56px; font-weight: 800; color: #e0e7ff; margin-bottom: 16px; }
+  .s-thanks p { font-size: 18px; color: #94a3b8; margin-bottom: 8px; }
+  .s-thanks .divider { width: 80px; height: 4px; background: linear-gradient(90deg,#6C63FF,#00b4d8); margin: 24px auto; border-radius: 2px; }
+
+  /* ─── CONTENT SLIDES ─── */
+  h2.sh { font-size: 28px; font-weight: 700; color: #1e293b; margin-bottom: 6px; line-height: 1.2; }
+  .sub { font-size: 12px; color: #6366f1; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 18px; }
+  p { font-size: 15px; color: #374151; line-height: 1.75; margin-bottom: 12px; }
+  ul { margin: 10px 0 10px 22px; }
+  li { font-size: 15px; color: #374151; line-height: 1.8; }
+  strong { color: #1e293b; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13.5px; }
+  th { background: #6C63FF; color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; }
+  td { padding: 9px 14px; border-bottom: 1px solid #e5e7eb; color: #374151; }
+  tr:nth-child(even) td { background: #f8f9ff; }
+  .rank1 td { background: #fef9c3 !important; font-weight: 700; }
+
+  pre {
+    background: #0f172a; color: #e2e8f0;
+    border-radius: 8px; padding: 18px 22px;
+    font-size: 12.5px; line-height: 1.7; margin: 14px 0;
+    font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    white-space: pre-wrap;
+  }
+  code { font-family: 'Fira Code', Consolas, monospace; background: #f1f5f9; color: #6366f1; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+
+  .callout { background: #f0f4ff; border-left: 4px solid #6C63FF; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14.5px; color: #1e293b; line-height: 1.7; }
+  .callout em { font-style: italic; color: #4f46e5; }
+  .success { background: #f0fdf4; border-left: 4px solid #22c55e; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 10px 0; font-size: 14px; color: #15803d; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 16px 0; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .box { background: #f8f9fc; border-radius: 10px; padding: 18px 20px; border: 1px solid #e5e7eb; }
+  .box h4 { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px; }
+  .box li, .box p { font-size: 13.5px; }
+
+  .metrics { display: flex; gap: 16px; margin: 18px 0; }
+  .metric { flex: 1; background: #f8f7ff; border: 1px solid #e0e7ff; border-radius: 10px; padding: 18px 14px; text-align: center; }
+  .metric .val { font-size: 32px; font-weight: 800; color: #6C63FF; }
+  .metric .lbl { font-size: 11.5px; color: #64748b; margin-top: 5px; font-weight: 600; line-height: 1.4; }
+
+  .tag { display: inline-block; background: #ede9fe; color: #6d28d9; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; margin: 2px; }
+  .tag-green { background: #dcfce7; color: #15803d; }
+  .tag-blue { background: #dbeafe; color: #1d4ed8; }
+  .tag-yellow { background: #fef9c3; color: #92400e; }
+  .tag-red { background: #fee2e2; color: #b91c1c; }
+
+  /* ─── ARCHITECTURE DIAGRAM (slide 7) ─── */
+  .arch-wrap { width: 100%; overflow: hidden; margin-top: 8px; }
+  .arch-zone {
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 12px;
+    border: 1.5px solid;
+  }
+  .zone-off { background: #eef2ff; border-color: #818cf8; }
+  .zone-on  { background: #f0fdf4; border-color: #4ade80; }
+  .zone-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+  .zone-off .zone-lbl { color: #4338ca; }
+  .zone-on .zone-lbl  { color: #15803d; }
+
+  .pipe-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .pipe-box {
+    background: #fff; border-radius: 7px; padding: 7px 11px;
+    font-size: 11.5px; font-weight: 600; border: 1.5px solid;
+    white-space: nowrap;
+  }
+  .pb-blue   { border-color: #60a5fa; color: #1d4ed8; }
+  .pb-purple { border-color: #a78bfa; color: #6d28d9; }
+  .pb-green  { border-color: #4ade80; color: #15803d; }
+  .pb-yellow { border-color: #fbbf24; color: #92400e; }
+  .pb-red    { border-color: #f87171; color: #b91c1c; }
+
+  .arr { font-size: 16px; color: #94a3b8; font-weight: 700; }
+  .arr-down { text-align: center; color: #94a3b8; font-size: 18px; margin: 4px 0; }
+
+  .score-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 10px 0;
+  }
+  .score-item {
+    background: #fff; border-radius: 8px; padding: 8px 6px; text-align: center;
+    border: 1.5px solid; font-size: 11px; font-weight: 700;
+  }
+  .si1 { border-color: #a78bfa; color: #6d28d9; }
+  .si2 { border-color: #818cf8; color: #4338ca; }
+  .si3 { border-color: #4ade80; color: #15803d; }
+  .si4 { border-color: #fbbf24; color: #92400e; }
+  .si5 { border-color: #f87171; color: #b91c1c; }
+  .score-item .pct { font-size: 18px; font-weight: 800; display: block; }
+
+  @media print {
+    body { background: white; }
+    .slide { box-shadow: none; margin: 0; border-radius: 0; width: 100%; min-height: 100vh; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 1 — TITLE
+═══════════════════════════════════════════════ -->
+<div class="slide s-title">
+  <div class="brand-bar"></div>
+  <div style="max-width:700px">
+    <div style="font-size:11px;color:#6366f1;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;">
+      Redrob · India Runs Data & AI Challenge · 2026
+    </div>
+    <h1>Multi-Signal Cascade Ranker</h1>
+    <h2>Semantic + Trust-Weighted + Behavioral Signals<br>for Senior AI Engineer Hiring</h2>
+    <div>
+      <span class="pill">SBERT Semantic Matching</span>
+      <span class="pill">Trust-Weighted Skills</span>
+      <span class="pill">Behavioral Availability</span>
+      <span class="pill">Honeypot Defense</span>
+    </div>
+    <div style="margin-top:36px">
+      <div class="meta"><strong>Team Leader:</strong> [Your Name]</div>
+      <div class="meta"><strong>Problem Statement:</strong> Rank top-100 from 100K candidates for a Senior AI Engineer JD (retrieval / recsys / ranking, India, product company, 5–9 YoE)</div>
+    </div>
+  </div>
+  <div class="slide-num" style="color:#475569">1 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 2 — SOLUTION OVERVIEW
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">Solution Overview</div>
+  <h2 class="sh">What we built — and why it's different</h2>
+
+  <div class="two-col" style="margin-top:4px">
+    <div>
+      <div class="box">
+        <h4>Proposed Solution</h4>
+        <p>A <strong>Multi-Signal Cascade Ranker</strong> that separates two phases:</p>
+        <ul>
+          <li><strong>Offline:</strong> SBERT embeddings + structured feature extraction (run once)</li>
+          <li><strong>Online:</strong> Pure numpy matrix multiply → weighted scoring → top-100 in &lt;5 seconds</li>
+        </ul>
+        <p style="margin-top:10px">No per-candidate LLM calls. No network. Fully deterministic and reproducible.</p>
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <h4>Differentiation from Traditional Systems</h4>
+        <ul>
+          <li><strong>vs. keyword / BM25:</strong> Surfaces ML engineers who write "led embedding migration" without using buzzwords</li>
+          <li><strong>vs. pure embeddings:</strong> Honeypots still score high on embeddings alone — we add hard-zero logic</li>
+          <li><strong>vs. LLM-per-candidate:</strong> 100K × 2s = 55+ hours; our approach is 5 seconds</li>
+          <li><strong>vs. skills-only ranking:</strong> Misses career narrative, behavioral signals, and timeline fraud</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:10px">
+    <strong>Core thesis:</strong> A recruiter needs to <em>trust</em> the shortlist. Every rank must be explainable from the candidate's actual career history — not a black box score.
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">2 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 3 — JD UNDERSTANDING & CANDIDATE EVALUATION
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">JD Understanding & Candidate Evaluation</div>
+  <h2 class="sh">Reading the JD — and what to look for beyond keywords</h2>
+
+  <div class="two-col" style="margin-top:6px">
+    <div>
+      <div class="box">
+        <h4>Key JD Requirements (distilled)</h4>
+        <ul>
+          <li>Embedding-based retrieval: <strong>FAISS, Qdrant, Pinecone, BM25</strong></li>
+          <li>Learning-to-rank: <strong>NDCG, MRR, offline/online split</strong></li>
+          <li>Recsys + NLP: <strong>transformers, fine-tuning, RAG</strong></li>
+          <li>Shipped systems to <strong>real production users</strong></li>
+          <li><strong>Product company</strong> preferred (not IT services)</li>
+          <li>India-based, <strong>5–9 YoE</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <h4>Candidate Signals We Extract</h4>
+        <ul>
+          <li><strong>Semantic:</strong> Career narrative cosine similarity vs JD query (35%)</li>
+          <li><strong>Skills:</strong> Trust-weighted tier taxonomy (20% + 20%)</li>
+          <li><strong>Trajectory:</strong> Product company premium, ML title bonus (12%)</li>
+          <li><strong>Availability:</strong> Open-to-work, recency, response rate (7%)</li>
+          <li><strong>Defense:</strong> Timeline impossibility, bulk keyword listing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Beyond keyword matching:</strong> A RecSys engineer at Swiggy who describes <em>"migrating from keyword-search to embedding-based retrieval"</em> scores 0.66 career SBERT similarity. A PM at Wipro who lists "Pinecone, FAISS" scores 0.31 — even with 9 AI skills listed.
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">3 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 4 — RANKING METHODOLOGY
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">Ranking Methodology</div>
+  <h2 class="sh">Retrieve → Score → Rank</h2>
+
+  <div class="two-col" style="margin-top:4px;align-items:start">
+    <div>
+      <div class="box">
+        <h4>Models & Algorithms</h4>
+        <ul>
+          <li><strong>SBERT</strong> <code>all-MiniLM-L6-v2</code> — 22M params, 384-dim vectors, sentence-level cosine similarity</li>
+          <li><strong>Trust-weighted scoring</strong> — <code>proficiency × log(1+endorsements) × log(1+months)</code></li>
+          <li><strong>Tier taxonomy</strong> — Tier A (FAISS, Qdrant, BM25 = 3×), Tier B (NLP, RAG = 1.5×), Tier C (Python, SQL = 0.5×)</li>
+          <li><strong>Numpy matmul</strong> — <code>career_vecs @ jd_vec</code> for 100K cosine similarities in milliseconds</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <h4>Signal Combination (weights sum to 1.0)</h4>
+        <div class="score-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="score-item si1"><span class="pct">35%</span>Career SBERT</div>
+          <div class="score-item si2"><span class="pct">20%</span>Skill SBERT</div>
+          <div class="score-item si3"><span class="pct">20%</span>Skill Trust</div>
+          <div class="score-item si4"><span class="pct">12%</span>Career Traj.</div>
+          <div class="score-item si5"><span class="pct">7%</span>Availability</div>
+          <div class="score-item" style="border-color:#94a3b8;color:#64748b;"><span class="pct">6%</span>Loc / YoE / Edu</div>
+        </div>
+        <p style="margin-top:10px;font-size:13px">All continuous signals. Only Honeypot detection applies a hard ×0 — everything else is a gradient.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>NDCG@10 = 50% of evaluation.</strong> SBERT dominates the top-10 because it understands career narratives semantically — not just which keywords appear. Skill Trust handles the keyword-stuffer trap independently.
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">4 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 5 — EXPLAINABILITY & DATA VALIDATION
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">Explainability & Data Validation</div>
+  <h2 class="sh">Every rank is explainable. Every fraud is caught.</h2>
+
+  <div class="two-col" style="margin-top:4px;align-items:start">
+    <div>
+      <div class="box">
+        <h4>How Ranking Decisions Are Explained</h4>
+        <p>Each candidate in the output CSV has a <code>reasoning</code> field generated from their actual data:</p>
+        <pre style="font-size:11px;margin:8px 0">"Applied ML Eng at Rephrase.ai→Paytm.
+Career SBERT 0.66 (top 5%). Skill trust
+357 — expert FAISS 36m (32 endorse),
+expert Qdrant 24m (18 endorse).
+India · 60-day notice · resp 0.91."</pre>
+        <p style="font-size:13px">Every string is templated from structured data — no LLM hallucination risk.</p>
+      </div>
+    </div>
+    <div>
+      <div class="box">
+        <h4>Suspicious Profile Defense</h4>
+        <p><strong>Honeypot Catch #1 — Timeline impossibility:</strong></p>
+        <pre style="font-size:11px;margin:6px 0">total_career_months / 12 > claimed_yoe + 3
+→ honeypot_flag = 0 (hard zero)</pre>
+        <p><strong>Honeypot Catch #2 — Bulk keyword listing:</strong></p>
+        <pre style="font-size:11px;margin:6px 0">count(expert/advanced skills with
+  duration ≤ 1 month) ≥ 4
+→ honeypot_flag = 0 (hard zero)</pre>
+        <div class="success">
+          Result: <strong>35 honeypots</strong> hard-zeroed across 100K. <strong>0 / 100</strong> in top-100 (limit: &lt;10).
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Keyword stuffers</strong> are handled differently — PM@Wipro who lists "FAISS, Pinecone, LLMs" for 4 months with 4 endorsements scores skill trust 12 vs a real ML engineer's 183. The penalty is continuous, not a hard filter.
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">5 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 6 — END-TO-END WORKFLOW
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">End-to-End Workflow</div>
+  <h2 class="sh">From JD input to ranked CSV output</h2>
+
+  <div style="margin-top:10px">
+    <div class="arch-zone zone-off">
+      <div class="zone-lbl">Step 1 — Offline Pre-computation (run once)</div>
+      <div class="pipe-row">
+        <div class="pipe-box pb-blue">candidates.jsonl<br><span style="font-size:10px;font-weight:400">100K profiles · 487MB</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-purple">feature_extractor.py<br><span style="font-size:10px;font-weight:400">18 structural signals</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-green">features.parquet<br><span style="font-size:10px;font-weight:400">100K × 18 · 2.5MB</span></div>
+      </div>
+      <div style="margin-top:10px" class="pipe-row">
+        <div class="pipe-box pb-yellow">Job Description<br><span style="font-size:10px;font-weight:400">distilled intent query</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-purple">SBERT Encoder<br><span style="font-size:10px;font-weight:400">all-MiniLM-L6-v2</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-blue">career_embeddings.npy<br><span style="font-size:10px;font-weight:400">100K × 384 · 146MB</span></div>
+        <span class="arr">+</span>
+        <div class="pipe-box pb-blue">skill_embeddings.npy<br><span style="font-size:10px;font-weight:400">100K × 384 · 146MB</span></div>
+        <span class="arr">+</span>
+        <div class="pipe-box pb-yellow">jd_vectors.npy<br><span style="font-size:10px;font-weight:400">2 × 384</span></div>
+      </div>
+    </div>
+
+    <div class="arr-down">↓</div>
+
+    <div class="arch-zone zone-on">
+      <div class="zone-lbl">Step 2 — Online Ranking (rank.py · pure numpy · &lt;5 seconds CPU)</div>
+      <div class="pipe-row">
+        <div class="pipe-box pb-purple">Load artifacts<br><span style="font-size:10px;font-weight:400">.npy + .parquet</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-blue">Cosine similarity<br><span style="font-size:10px;font-weight:400">matmul 100K×384</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-green">Weighted scoring<br><span style="font-size:10px;font-weight:400">9 signals combined</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-red">× Honeypot check<br><span style="font-size:10px;font-weight:400">hard zero if flagged</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-green">Top-100 sort<br><span style="font-size:10px;font-weight:400">descending score</span></div>
+        <span class="arr">→</span>
+        <div class="pipe-box pb-green" style="background:#dcfce7">submission.csv<br><span style="font-size:10px;font-weight:400">rank · score · reason</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:10px">
+    <strong>Key insight:</strong> Pre-computation is unconstrained; online ranking is <em>zero network calls, zero LLM inference</em>. The scoring step is a single numpy matrix multiply — 100K cosine similarities in under 100ms.
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">6 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 7 — SYSTEM ARCHITECTURE
+═══════════════════════════════════════════════ -->
+<div class="slide" style="padding:40px 50px">
+  <div class="sub">System Architecture</div>
+  <h2 class="sh" style="margin-bottom:14px">Multi-Signal Cascade Ranker — Architecture Diagram</h2>
+
+  <svg viewBox="0 0 1100 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;font-family:'Segoe UI',system-ui,sans-serif">
+    <defs>
+      <marker id="ah"   markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#6b7280"/></marker>
+      <marker id="ah-b" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#3b82f6"/></marker>
+      <marker id="ah-g" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#22c55e"/></marker>
+      <marker id="ah-p" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#8b5cf6"/></marker>
+      <marker id="ah-y" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#d97706"/></marker>
+      <marker id="ah-r" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#dc2626"/></marker>
+    </defs>
+
+    <!-- ═══ OFFLINE ZONE ═══ -->
+    <rect x="10" y="10" width="1080" height="262" rx="10" fill="#eef2ff" stroke="#818cf8" stroke-width="1.5"/>
+    <text x="22" y="27" font-size="9.5" fill="#4338ca" font-weight="800" letter-spacing="1.2">OFFLINE PRE-COMPUTATION  (run once — unconstrained time)</text>
+
+    <!-- candidates.jsonl -->
+    <rect x="18" y="44" width="162" height="56" rx="7" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="99" y="66" text-anchor="middle" font-size="11.5" fill="#1d4ed8" font-weight="700">candidates.jsonl</text>
+    <text x="99" y="85" text-anchor="middle" font-size="9.5" fill="#2563eb">100K profiles · 487MB</text>
+
+    <line x1="180" y1="72" x2="202" y2="72" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ah)"/>
+
+    <!-- feature_extractor.py -->
+    <rect x="204" y="44" width="172" height="56" rx="7" fill="#ede9fe" stroke="#a78bfa" stroke-width="1.5"/>
+    <text x="290" y="66" text-anchor="middle" font-size="11.5" fill="#6d28d9" font-weight="700">feature_extractor.py</text>
+    <text x="290" y="85" text-anchor="middle" font-size="9.5" fill="#7c3aed">18 structural signals</text>
+
+    <!-- fext → SBERT -->
+    <line x1="376" y1="72" x2="398" y2="72" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#ah-p)"/>
+    <!-- fext ↓ features.parquet -->
+    <line x1="290" y1="100" x2="290" y2="170" stroke="#22c55e" stroke-width="1.5" marker-end="url(#ah-g)"/>
+
+    <!-- features.parquet -->
+    <rect x="204" y="172" width="172" height="56" rx="7" fill="#dcfce7" stroke="#4ade80" stroke-width="1.5"/>
+    <text x="290" y="194" text-anchor="middle" font-size="11.5" fill="#15803d" font-weight="700">features.parquet</text>
+    <text x="290" y="213" text-anchor="middle" font-size="9.5" fill="#16a34a">100K × 18 signals · 2.5MB</text>
+
+    <!-- Job Description -->
+    <rect x="18" y="172" width="162" height="56" rx="7" fill="#fef9c3" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="99" y="194" text-anchor="middle" font-size="11.5" fill="#92400e" font-weight="700">Job Description</text>
+    <text x="99" y="213" text-anchor="middle" font-size="9.5" fill="#b45309">distilled intent query</text>
+
+    <!-- JD → SBERT curved arrow -->
+    <path d="M 180 200 Q 289 200 398 76" fill="none" stroke="#d97706" stroke-width="1.5" marker-end="url(#ah-y)"/>
+
+    <!-- candidate_ids.npy -->
+    <rect x="18" y="244" width="162" height="48" rx="7" fill="#f1f5f9" stroke="#94a3b8" stroke-width="1.5"/>
+    <text x="99" y="264" text-anchor="middle" font-size="11" fill="#475569" font-weight="700">candidate_ids.npy</text>
+    <text x="99" y="282" text-anchor="middle" font-size="9" fill="#64748b">alignment index · 4.6MB</text>
+
+    <!-- SBERT Encoder (prominent) -->
+    <rect x="400" y="36" width="212" height="80" rx="8" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2.5"/>
+    <text x="506" y="63" text-anchor="middle" font-size="13.5" fill="#5b21b6" font-weight="800">SBERT Encoder</text>
+    <text x="506" y="82" text-anchor="middle" font-size="10.5" fill="#6d28d9">all-MiniLM-L6-v2 · 384-dim</text>
+    <text x="506" y="98" text-anchor="middle" font-size="9" fill="#8b5cf6">Apple MPS GPU · batch=256</text>
+
+    <!-- Fan-out bus: SBERT right → vertical bus → 3 artifacts -->
+    <line x1="612" y1="76" x2="630" y2="76" stroke="#6b7280" stroke-width="1.5"/>
+    <line x1="630" y1="62" x2="630" y2="216" stroke="#6b7280" stroke-width="1.2"/>
+    <!-- → career_npy -->
+    <line x1="630" y1="62" x2="654" y2="62" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ah-b)"/>
+    <!-- → skill_npy -->
+    <line x1="630" y1="139" x2="654" y2="139" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ah-b)"/>
+    <!-- → jd_vectors -->
+    <line x1="630" y1="216" x2="654" y2="216" stroke="#d97706" stroke-width="1.5" marker-end="url(#ah-y)"/>
+
+    <!-- career_embeddings.npy -->
+    <rect x="656" y="36" width="232" height="52" rx="7" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="772" y="57" text-anchor="middle" font-size="11" fill="#1d4ed8" font-weight="700">career_embeddings.npy</text>
+    <text x="772" y="75" text-anchor="middle" font-size="9.5" fill="#2563eb">100K × 384 · 146MB</text>
+
+    <!-- skill_embeddings.npy -->
+    <rect x="656" y="113" width="232" height="52" rx="7" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="772" y="134" text-anchor="middle" font-size="11" fill="#1d4ed8" font-weight="700">skill_embeddings.npy</text>
+    <text x="772" y="152" text-anchor="middle" font-size="9.5" fill="#2563eb">100K × 384 · 146MB</text>
+
+    <!-- jd_vectors.npy -->
+    <rect x="656" y="190" width="232" height="52" rx="7" fill="#fef9c3" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="772" y="211" text-anchor="middle" font-size="11" fill="#92400e" font-weight="700">jd_vectors.npy</text>
+    <text x="772" y="229" text-anchor="middle" font-size="9.5" fill="#b45309">2 × 384 (career + skill query)</text>
+
+    <!-- Phase transition arrow (centred at x=548) -->
+    <line x1="548" y1="275" x2="548" y2="294" stroke="#1e293b" stroke-width="2.5" marker-end="url(#ah)"/>
+    <text x="565" y="289" font-size="10" fill="#475569" font-weight="600">load artifacts</text>
+
+    <!-- ═══ ONLINE ZONE ═══ -->
+    <rect x="10" y="298" width="1080" height="212" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1.5"/>
+    <text x="22" y="315" font-size="9.5" fill="#15803d" font-weight="800" letter-spacing="1.2">ONLINE RANKING   (rank.py — pure numpy, CPU-only, &lt;5 seconds for 100K candidates)</text>
+
+    <!-- rank.py -->
+    <rect x="18" y="326" width="162" height="58" rx="7" fill="#ede9fe" stroke="#8b5cf6" stroke-width="2"/>
+    <text x="99" y="350" text-anchor="middle" font-size="12" fill="#6d28d9" font-weight="700">rank.py</text>
+    <text x="99" y="368" text-anchor="middle" font-size="10" fill="#7c3aed">matmul cosine sim</text>
+
+    <!-- rank.py → scoring header -->
+    <line x1="180" y1="355" x2="198" y2="338" stroke="#8b5cf6" stroke-width="1.5" marker-end="url(#ah-p)"/>
+
+    <!-- Scoring formula header bar
+         x=200, w=696 → right edge at 896 -->
+    <rect x="200" y="322" width="696" height="28" rx="5" fill="#6C63FF"/>
+    <text x="548" y="340" text-anchor="middle" font-size="11" fill="white" font-weight="800" letter-spacing="0.3">WEIGHTED SCORING FORMULA  —  signals normalized, weights sum to 1.0</text>
+
+    <!-- 5 scoring boxes: width=135, gap=6 → 5×135+4×6=699 ≈ 696 ✓
+         x offsets: 200, 341, 482, 623, 764   (last ends at 764+132=896) -->
+
+    <!-- Box 1: Career SBERT 35% -->
+    <rect x="200" y="354" width="135" height="76" rx="7" fill="#ede9fe" stroke="#8b5cf6" stroke-width="1.5"/>
+    <text x="267" y="374" text-anchor="middle" font-size="10.5" fill="#5b21b6" font-weight="800">Career SBERT</text>
+    <text x="267" y="397" text-anchor="middle" font-size="19" fill="#6d28d9" font-weight="900">35%</text>
+    <text x="267" y="424" text-anchor="middle" font-size="8.5" fill="#7c3aed">semantic narrative fit</text>
+
+    <!-- Box 2: Skill SBERT 20% -->
+    <rect x="341" y="354" width="135" height="76" rx="7" fill="#dbeafe" stroke="#60a5fa" stroke-width="1.5"/>
+    <text x="408" y="374" text-anchor="middle" font-size="10.5" fill="#1e40af" font-weight="800">Skill SBERT</text>
+    <text x="408" y="397" text-anchor="middle" font-size="19" fill="#2563eb" font-weight="900">20%</text>
+    <text x="408" y="424" text-anchor="middle" font-size="8.5" fill="#3b82f6">skill text vs JD query</text>
+
+    <!-- Box 3: Skill Trust 20% -->
+    <rect x="482" y="354" width="135" height="76" rx="7" fill="#dcfce7" stroke="#4ade80" stroke-width="1.5"/>
+    <text x="549" y="374" text-anchor="middle" font-size="10.5" fill="#14532d" font-weight="800">Skill Trust</text>
+    <text x="549" y="397" text-anchor="middle" font-size="19" fill="#16a34a" font-weight="900">20%</text>
+    <text x="549" y="415" text-anchor="middle" font-size="8" fill="#15803d">prof × log(endorse)</text>
+    <text x="549" y="426" text-anchor="middle" font-size="8" fill="#15803d">× log(duration)</text>
+
+    <!-- Box 4: Career Trajectory 12% -->
+    <rect x="623" y="354" width="135" height="76" rx="7" fill="#fef9c3" stroke="#fbbf24" stroke-width="1.5"/>
+    <text x="690" y="374" text-anchor="middle" font-size="10.5" fill="#78350f" font-weight="800">Career Traj.</text>
+    <text x="690" y="397" text-anchor="middle" font-size="19" fill="#b45309" font-weight="900">12%</text>
+    <text x="690" y="415" text-anchor="middle" font-size="8" fill="#92400e">product co premium</text>
+    <text x="690" y="426" text-anchor="middle" font-size="8" fill="#92400e">ML title bonus</text>
+
+    <!-- Box 5: Availability 7% + Loc/YoE/Edu 6% -->
+    <rect x="764" y="354" width="132" height="76" rx="7" fill="#fee2e2" stroke="#f87171" stroke-width="1.5"/>
+    <text x="830" y="374" text-anchor="middle" font-size="10.5" fill="#7f1d1d" font-weight="800">Availability</text>
+    <text x="830" y="397" text-anchor="middle" font-size="19" fill="#b91c1c" font-weight="900">7%</text>
+    <text x="830" y="415" text-anchor="middle" font-size="8" fill="#dc2626">recency · response rate</text>
+    <text x="830" y="426" text-anchor="middle" font-size="8" fill="#dc2626">Loc 3% · YoE/Edu 2%</text>
+
+    <!-- Arrow: s5 right → Honeypot left vertex -->
+    <line x1="896" y1="392" x2="918" y2="392" stroke="#6b7280" stroke-width="1.5" marker-end="url(#ah)"/>
+
+    <!-- Honeypot diamond: center=(974, 392), half-w=56, half-h=46
+         Points: top(974,346), right(1030,392), bottom(974,438), left(918,392) -->
+    <polygon points="974,346 1030,392 974,438 918,392" fill="#fee2e2" stroke="#ef4444" stroke-width="1.5"/>
+    <text x="974" y="381" text-anchor="middle" font-size="10" fill="#991b1b" font-weight="800">× Honeypot</text>
+    <text x="974" y="395" text-anchor="middle" font-size="10" fill="#991b1b" font-weight="800">Flag</text>
+    <text x="974" y="410" text-anchor="middle" font-size="8" fill="#b91c1c">hard zero</text>
+
+    <!-- Honeypot bottom → Top-100 top -->
+    <line x1="974" y1="438" x2="974" y2="457" stroke="#22c55e" stroke-width="1.5" marker-end="url(#ah-g)"/>
+
+    <!-- Top-100 Sort -->
+    <rect x="912" y="459" width="124" height="44" rx="7" fill="#bbf7d0" stroke="#22c55e" stroke-width="2"/>
+    <text x="974" y="478" text-anchor="middle" font-size="11.5" fill="#14532d" font-weight="800">Top-100 Sort</text>
+    <text x="974" y="494" text-anchor="middle" font-size="9" fill="#15803d">descending final_score</text>
+  </svg>
+
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">7 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 8 — RESULTS & PERFORMANCE
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">Results & Performance</div>
+  <h2 class="sh">Ranking quality and runtime metrics</h2>
+
+  <div class="metrics" style="margin-top:8px">
+    <div class="metric"><div class="val">0.835</div><div class="lbl">Top candidate score<br>(CAND_0045250)</div></div>
+    <div class="metric"><div class="val">&lt;5s</div><div class="lbl">Online ranking time<br>(CPU, 100K candidates)</div></div>
+    <div class="metric"><div class="val">0%</div><div class="lbl">Honeypots in top-100<br>(35 caught and zeroed)</div></div>
+    <div class="metric"><div class="val">0%</div><div class="lbl">Consulting-only profiles<br>in top-100</div></div>
+  </div>
+
+  <table style="margin-top:8px;font-size:12.5px">
+    <tr><th>Rank</th><th>Candidate ID</th><th>Title</th><th>Career Path</th><th>Score</th></tr>
+    <tr class="rank1"><td>#1</td><td>CAND_0045250</td><td>Applied ML Engineer</td><td>Rephrase.ai → Paytm</td><td>0.8350</td></tr>
+    <tr><td>#2</td><td>CAND_0077337</td><td>Staff ML Engineer</td><td>Paytm → Razorpay → Glance</td><td>0.8281</td></tr>
+    <tr><td>#3</td><td>CAND_0071974</td><td>Senior AI Engineer</td><td>Netflix → Meta → Mad Street Den</td><td>0.8205</td></tr>
+    <tr><td>#4</td><td>CAND_0081846</td><td>Lead AI Engineer</td><td>Razorpay → Paytm</td><td>0.8196</td></tr>
+    <tr><td>#5</td><td>CAND_0094056</td><td>NLP Engineer</td><td>Rephrase.ai → Adobe</td><td>0.8152</td></tr>
+  </table>
+
+  <div class="two-col" style="margin-top:10px">
+    <div class="box">
+      <h4>What got correctly eliminated</h4>
+      <ul>
+        <li>PM@Wipro listing 9 AI skills → career SBERT 0.31, consulting penalty → not in top-100</li>
+        <li>35 honeypots with impossible timelines → hard zero, rank last</li>
+        <li>Great profiles with 8-month inactivity → availability &lt;0.05 → drops 40+ ranks</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h4>Runtime constraints</h4>
+      <ul>
+        <li>Offline embedding: ~18 min, Apple Silicon MPS, batch=256</li>
+        <li>Matmul 100K×384: &lt;100ms on CPU</li>
+        <li>Full rank.py pipeline: ~4.8s on MacBook CPU</li>
+        <li>Validator passes: 0 violations, correct format</li>
+      </ul>
+    </div>
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">8 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 9 — TECHNOLOGIES USED
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">Technologies Used</div>
+  <h2 class="sh">Frameworks, models, and why we chose them</h2>
+
+  <div class="three-col" style="margin-top:10px">
+    <div class="box">
+      <h4>Core ML</h4>
+      <p><span class="tag">sentence-transformers</span></p>
+      <p style="font-size:13px;margin-top:6px">SBERT library — gives us <code>all-MiniLM-L6-v2</code>, the best CPU-deployable semantic model at 22M params. 384-dim vectors, 14k token/sec throughput on MPS.</p>
+      <p><span class="tag-blue">PyTorch + MPS</span></p>
+      <p style="font-size:13px;margin-top:6px">Apple Silicon GPU acceleration for the offline embedding batch job. Reduced 100K embedding time from ~90 min (CPU) to ~18 min.</p>
+    </div>
+    <div class="box">
+      <h4>Data Pipeline</h4>
+      <p><span class="tag-green">numpy</span> <span class="tag-green">pandas</span> <span class="tag-green">pyarrow</span></p>
+      <p style="font-size:13px;margin-top:6px"><strong>numpy matmul</strong> is the heart of the online ranker — <code>career_vecs @ jd_vec</code> gives 100K cosine similarities in &lt;100ms without any special indexing library.</p>
+      <p style="margin-top:8px"><strong>pyarrow + parquet</strong> for columnar storage of 18 structured features — fast I/O, typed, &lt;3MB on disk.</p>
+    </div>
+    <div class="box">
+      <h4>Deployment</h4>
+      <p><span class="tag-yellow">Gradio</span></p>
+      <p style="font-size:13px;margin-top:6px">HuggingFace Spaces sandbox. Accepts up to 200 candidates as JSON, runs the full inline pipeline, returns ranked CSV. Self-contained — no external artifacts needed.</p>
+      <p><span class="tag-red">No LLM APIs</span></p>
+      <p style="font-size:13px;margin-top:6px">Deliberate choice — zero latency from network calls, zero cost per candidate, fully deterministic output, no rate limiting.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:12px">
+    <strong>Why not use a vector database (FAISS/Qdrant)?</strong> With 100K candidates and a single JD, brute-force matmul is faster than index lookup overhead. ANN indexes add value at 10M+ scale with many concurrent queries.
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">9 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 10 — SUBMISSION ASSETS
+═══════════════════════════════════════════════ -->
+<div class="slide">
+  <div class="sub">Submission Assets</div>
+  <h2 class="sh">Everything submitted — and where to find it</h2>
+
+  <div class="two-col" style="margin-top:8px">
+    <div>
+      <div class="box" style="margin-bottom:14px">
+        <h4>GitHub Repository</h4>
+        <p style="font-size:13.5px">All code, clean and reproducible:</p>
+        <ul style="margin-top:8px">
+          <li><code>feature_extractor.py</code> — 18-signal feature builder</li>
+          <li><code>embed_only.py</code> — MPS-accelerated SBERT embedding</li>
+          <li><code>rank.py</code> — online ranker, loads artifacts, outputs CSV</li>
+          <li><code>gradio_app.py</code> — self-contained HuggingFace sandbox</li>
+          <li><code>requirements.txt</code> — reproducible environment</li>
+          <li><code>submission_metadata.yaml</code> — approach summary</li>
+        </ul>
+        <p style="margin-top:10px;font-size:13px">Link: <strong>[GitHub URL]</strong></p>
+      </div>
+      <div class="box">
+        <h4>Ranked Output CSV</h4>
+        <ul>
+          <li>File: <code>team_xxx.csv</code></li>
+          <li>100 rows, validated with <code>validate_submission.py</code></li>
+          <li>Columns: candidate_id, rank, score, reasoning</li>
+          <li>Score range: 0.6991 → 0.8350</li>
+          <li>0 score ordering violations</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="box" style="margin-bottom:14px">
+        <h4>Gradio Sandbox (HuggingFace Spaces)</h4>
+        <p style="font-size:13px">Live demo — paste up to 200 candidates as JSON, get a ranked CSV back:</p>
+        <pre style="font-size:11px;margin:8px 0">Input:  JSON array of candidate objects
+Output: ranked CSV with scores + reasoning
+Link:   [HuggingFace Spaces URL]</pre>
+      </div>
+      <div class="box">
+        <h4>Reproduce the Full Pipeline</h4>
+        <pre style="font-size:11px">pip install -r requirements.txt
+
+# Offline (run once)
+python embed_only.py \
+  --candidates candidates.jsonl \
+  --out_dir ./precomputed
+
+# Online ranking (&lt;5 sec)
+python rank.py \
+  --candidates candidates.jsonl \
+  --artifacts_dir ./precomputed \
+  --out team_xxx.csv
+
+# Validate
+python validate_submission.py \
+  --submission team_xxx.csv</pre>
+      </div>
+    </div>
+  </div>
+  <div class="slide-brand">Redrob India Runs 2026</div>
+  <div class="slide-num">10 / 11</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     SLIDE 11 — THANK YOU
+═══════════════════════════════════════════════ -->
+<div class="slide s-thanks">
+  <div class="brand-bar"></div>
+  <div>
+    <h1>Thank You</h1>
+    <div class="divider"></div>
+    <p style="color:#94a3b8;font-size:18px;margin-bottom:4px">Multi-Signal Cascade Ranker</p>
+    <p style="color:#64748b;font-size:15px;margin-bottom:28px">Redrob India Runs Data & AI Challenge · 2026</p>
+    <p style="color:#e2e8f0;font-size:16px;font-weight:600">Deterministic. Interpretable. Fast.</p>
+    <p style="color:#64748b;font-size:14px;margin-top:8px">Every rank explainable from real candidate history.</p>
+    <div style="margin-top:36px;display:flex;justify-content:center;gap:32px">
+      <div style="text-align:center">
+        <div style="font-size:24px;font-weight:800;color:#a5f3fc">100K</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">candidates ranked</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:24px;font-weight:800;color:#a5f3fc">&lt;5s</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">CPU ranking time</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:24px;font-weight:800;color:#a5f3fc">0</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">honeypots in top-100</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:24px;font-weight:800;color:#a5f3fc">9</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">signals combined</div>
+      </div>
+    </div>
+  </div>
+  <div class="slide-num" style="color:#475569">11 / 11</div>
+</div>
+
+</body>
+</html>
