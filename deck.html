@@ -153,9 +153,24 @@
   .si5 { border-color: #f87171; color: #b91c1c; }
   .score-item .pct { font-size: 18px; font-weight: 800; display: block; }
 
+  @page {
+    size: A4 landscape;
+    margin: 0;
+  }
   @media print {
     body { background: white; }
-    .slide { box-shadow: none; margin: 0; border-radius: 0; width: 100%; min-height: 100vh; page-break-after: always; }
+    .slide {
+      box-shadow: none;
+      margin: 0;
+      border-radius: 0;
+      width: 100%;
+      height: 100vh;
+      min-height: unset;
+      page-break-after: always;
+      break-after: page;
+      padding: 44px 60px;
+    }
+    .slide:last-child { page-break-after: avoid; break-after: avoid; }
   }
 </style>
 </head>
@@ -179,7 +194,7 @@
       <span class="pill">Honeypot Defense</span>
     </div>
     <div style="margin-top:36px">
-      <div class="meta"><strong>Team Leader:</strong> [Your Name]</div>
+      <div class="meta"><strong>Team Leader:</strong> Meet Vaddoriya</div>
       <div class="meta"><strong>Problem Statement:</strong> Rank top-100 from 100K candidates for a Senior AI Engineer JD (retrieval / recsys / ranking, India, product company, 5–9 YoE)</div>
     </div>
   </div>
